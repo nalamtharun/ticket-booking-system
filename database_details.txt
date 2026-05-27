@@ -1,0 +1,132 @@
+
+To make sure anyone downloading your project from GitHub knows how to set up the MySQL database, you should add a **`README.md`** file to your project root folder. This acts as the homepage documentation for your repository on GitHub.
+
+Here is exactly how to create it and add your database details:
+
+---
+
+### Step 1: Create the Documentation File
+
+1. In your Git Bash terminal (which is now open inside your `ticket-system` folder), type this command to open a text file:
+```bash
+notepad README.md
+
+```
+
+
+2. Click **Yes** when Windows asks if you want to create a new file.
+3. Paste the following complete, professional documentation layout into the open Notepad window:
+
+```markdown
+# High-Concurrency Ticket Booking System
+
+An enterprise-ready Spring Boot application designed to handle high-volume ticket booking traffic safely using database-level Pessimistic Locking to eliminate race conditions. Includes a real-time reactive HTML5 dashboard interface.
+
+---
+
+## 🛠️ Database Setup Configuration
+
+To run this application locally, you must have a MySQL server running. Follow these configuration details:
+
+### 1. Create the Database Schema
+Open your MySQL Command Line Client or workbench and execute:
+
+```sql
+CREATE DATABASE ticket_system;
+
+```
+
+### 2. Required Database Tables Setup
+
+Execute the following queries to create the structured relational layout:
+
+```sql
+USE ticket_system;
+
+-- Create Users Table
+CREATE TABLE users (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL
+);
+
+-- Create Events Table
+CREATE TABLE events (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(100) NOT NULL,
+    available_tickets INT NOT NULL CHECK (available_tickets >= 0)
+);
+
+-- Create Bookings Table
+CREATE TABLE bookings (
+    id VARCHAR(36) PRIMARY KEY,
+    user_id BIGINT,
+    event_id BIGINT,
+    booking_status VARCHAR(20) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (event_id) REFERENCES events(id)
+);
+
+```
+
+### 3. Insert Initial Mock Bootstrap Data
+
+You need at least one event and one user to execute bookings cleanly:
+
+```sql
+-- Seed dummy customer
+INSERT INTO users (id, name, email) VALUES (1, 'Test User', 'user1@example.com');
+
+-- Seed target concert/event with inventory
+INSERT INTO events (id, title, available_tickets) VALUES (1, 'Rock Concert 2026', 100);
+
+```
+
+---
+
+## ⚙️ Spring Boot Configuration
+
+Ensure your `src/main/resources/application.properties` file points to your local database instance:
+
+```properties
+spring.datasource.url=jdbc:mysql://localhost:3306/ticket_system?useSSL=false&serverTimezone=UTC
+spring.datasource.username=YOUR_MYSQL_USERNAME
+spring.datasource.password=YOUR_MYSQL_PASSWORD
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+
+```
+
+```
+
+4. Save the file (`Ctrl + S`) and close Notepad.
+
+---
+
+### Step 2: Push the Updated Project to GitHub
+
+Now that the database documentation is saved, run these three quick commands in Git Bash to update your GitHub account:
+
+1. **Stage your new README file:**
+   ```bash
+   git add README.md
+
+```
+
+2. **Commit the change:**
+```bash
+git commit -m "Docs: Added comprehensive database configuration schema to README"
+
+```
+
+
+3. **Push it up online:**
+```bash
+git push origin main
+
+```
+
+
+
+Refresh your GitHub browser page, and you will see your database setup steps displayed underneath your files.
